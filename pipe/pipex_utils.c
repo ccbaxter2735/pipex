@@ -6,7 +6,7 @@
 /*   By: terussar <terussar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 10:10:31 by terussar          #+#    #+#             */
-/*   Updated: 2023/05/30 17:44:48 by terussar         ###   ########.fr       */
+/*   Updated: 2023/06/27 16:45:54 by terussar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,15 @@ char	*find_cmd(char *cmd, char **env)
 	int		i;
 
 	i = 0;
+	if (!cmd || !cmd[0])
+		return (NULL);
 	if (cmd[0] != '/' && cmd[0] != '.' )
 		path = find_path(env);
 	else
+	{
 		path = &cmd;
+		path[1] = NULL;
+	}
 	while (path[i])
 	{
 		tmp = ft_strjoin(path[i], "/");

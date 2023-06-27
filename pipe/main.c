@@ -6,7 +6,7 @@
 /*   By: terussar <terussar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 10:03:41 by terussar          #+#    #+#             */
-/*   Updated: 2023/06/22 12:09:33 by terussar         ###   ########.fr       */
+/*   Updated: 2023/06/27 16:51:10 by terussar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ void	child1(char **av, int *pfd, char **env)
 	fd = open_file(av[1], 0);
 	dup2(pfd[1], 1);
 	close(pfd[0]);
+	close(pfd[1]);
 	dup2(fd, 0);
+	close(fd);
 	option = ft_split(av[2], ' ');
 	cmd = find_cmd(option[0], env);
 	if (!cmd)
@@ -44,6 +46,7 @@ void	child1(char **av, int *pfd, char **env)
 		exit(1);
 	}
 	execve(cmd, option, env);
+	exit(1);
 }
 
 void	child2(char **av, int *pfd, char **env)
@@ -54,17 +57,20 @@ void	child2(char **av, int *pfd, char **env)
 
 	fd = open_file(av[4], 1);
 	dup2(pfd[0], 0);
+	close(pfd[0]);
 	close(pfd[1]);
 	dup2(fd, 1);
+	close(fd);
 	option = ft_split(av[3], ' ');
 	cmd = find_cmd(option[0], env);
 	if (!cmd)
 	{
 		free_option(option);
-		perror("Error\nsecond command not found\n");
+		perror("Error\nsecond command not found");
 		exit(1);
 	}
 	execve(cmd, option, env);
+	exit(1);
 }
 
 int	main(int ac, char **av, char **env)
@@ -103,4 +109,5 @@ int	main(int ac, char **av, char **env)
 	close(pfd[1]);
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
+	return (0);
 }
